@@ -1,6 +1,5 @@
-import hal_screen, hal_keypad, ble_hid
+import hal_screen, hal_keypad, ble_hid, ustruct
 from play32sys import app
-from play32hw import cpu
 from ui.dialog import dialog
 from ui.select import select_menu
 
@@ -78,12 +77,28 @@ def main_loop_media():
 def main_loop_gamepad():
     hid = ble_hid.HID("Play32_Gamepad", ble_hid.TYPE_GAMEPAD)
     hid.init(ble_hid._REPORT_MAP_GAMEPAD)
+    x = ustruct.pack("b", 0)
+    y = ustruct.pack("b", 0)
     byte = 0
     while True:
         for event in hal_keypad.get_key_event():
             event_type, key = hal_keypad.parse_key_event(event)
             if event_type == hal_keypad.EVENT_KEY_PRESS:
-                byte = set_bit(byte, key)
+                if key == hal_keypad.KEY_UP:
+                    y = ustruct.pack("b", -127)
+                if key == hal_keypad.KEY_DOWN:
+                    y = ustruct.pack("b", 127)
+                if key == hal_keypad.KEY_LEFT:
+                    x = ustruct.pack("b", -127)
+                if key == hal_keypad.KEY_RIGHT:
+                    x = ustruct.pack("b", 127)
+                if key == hal_keypad.KEY_A or key == hal_keypad.KEY_B:
+                    byte = set_bit(byte, key)
             if event_type == hal_keypad.EVENT_KEY_RELEASE:
-                byte = clear_bit(byte, key)
-            hid.report(bytes([byte]))
+                if key == hal_keypad.KEY_UP or key == hal_keypad.KEY_DOWN:
+                    y = ustruct.pack("b", 0)
+                if key == hal_keypad.KEY_LEFT or key == hal_keypad.KEY_RIGHT:
+                    x = ustruct.pack("b", 0)
+                if key == hal_keypad.KEY_A or key == hal_keypad.KEY_B:
+                    byte = clear_bit(byte, key)
+            hid.report(x + y + bytes([byte]))

@@ -51,7 +51,7 @@ SERVICES = (HIDS,)
 # use little-endian
 TYPE_MEDIA_CONTROL = b"\xC0\x03"
 TYPE_KEYBOARD = b"\xC1\x03"
-TYPE_GAMEPAD = b"\xC4\x03"
+TYPE_GAMEPAD = b"\xC3\x03"
 
 # [    # Report Description: describes what we communicate
 #     # Report ID 1: Advanced buttons
@@ -124,25 +124,33 @@ _REPORT_MAP_MEDIA_CONTROL = b"\x05\x0c\t\x01\xa1\x01\x85\x01\x15\x00%\x01u\x01\x
 #     0xc0             # END_COLLECTION
 # ]
 _REPORT_MAP_KEYBOARD = b"\x05\x01\t\x06\xa1\x01\x85\x01u\x01\x95\x08\x05\x07\x19\xe0)\xe7\x15\x00%\x01\x81\x02u\x08\x95\x01\x81\x01u\x01\x95\x05\x05\x08\x19\x01)\x05\x91\x02\x95\x01u\x03\x91\x01u\x08\x95\x06\x15\x00%e\x05\x07\x19\x00)e\x81\x00\xc0"
-# [    # Report Description: describes what we communicate
-#     0x05, 0x01,                    # USAGE_PAGE (Generic Desktop)
-#     0x09, 0x05,                    # USAGE (Game Pad)
-#     0xa1, 0x01,                    # COLLECTION (Application)
-#     0x85, 0x01,                    #   REPORT_ID (1)
-#     0xa1, 0x00,                    #   COLLECTION (Physical)
-#     # buttons
-#     0x05, 0x09,                    #     USAGE_PAGE (Button)
-#     0x75, 0x01,                    #     REPORT_SIZE (1)
-#     0x95, 0x08,                    #     REPORT_COUNT (8)
-#     0x19, 0x01,                    #     USAGE_MINIMUM (Button 1)
-#     0x29, 0x08,                    #     USAGE_MAXIMUM (Button 8)
-#     0x25, 0x01,                    #     LOGICAL_MAXIMUM (1)
-#     0x15, 0x00,                    #     LOGICAL_MINIMUM (0)
-#     0x81, 0x02,                    #     Input (Data, Variable, Absolute)
-#     0xc0,                          #   END_COLLECTION
-#     0xc0                           # END_COLLECTION
-# ]
-_REPORT_MAP_GAMEPAD = b"\x05\x01\t\x05\xa1\x01\x85\x01\xa1\x00\x05\tu\x01\x95\x08\x19\x01)\x08%\x01\x15\x00\x81\x02\xc0\xc0"
+[    # Report Description: describes what we communicate
+    0x05, 0x01,                    # USAGE_PAGE (Generic Desktop)
+    0x09, 0x04,                    # USAGE (Joystick)
+    0xa1, 0x01,                    # COLLECTION (Application)
+    0x85, 0x01,                    #   REPORT_ID (1)
+    0xa1, 0x00,                    #   COLLECTION (Physical)
+    # sticks
+    0x09, 0x30,                    #     USAGE (X)
+    0x09, 0x31,                    #     USAGE (Y)
+    0x75, 0x08,                    #     REPORT_SIZE (8)
+    0x95, 0x02,                    #     REPORT_COUNT (2)
+    0x15, 0x81,                    #     LOGICAL_MINIMUM (-127)
+    0x25, 0x7f,                    #     LOGICAL_MAXIMUM (127)
+    0x81, 0x02,                    #     INPUT (Data,Var,Abs)
+    # buttons
+    0x05, 0x09,                    #     USAGE_PAGE (Button)
+    0x75, 0x01,                    #     REPORT_SIZE (1)
+    0x95, 0x08,                    #     REPORT_COUNT (8)
+    0x19, 0x01,                    #     USAGE_MINIMUM (Button 1)
+    0x29, 0x08,                    #     USAGE_MAXIMUM (Button 8)
+    0x25, 0x01,                    #     LOGICAL_MAXIMUM (1)
+    0x15, 0x00,                    #     LOGICAL_MINIMUM (0)
+    0x81, 0x02,                    #     Input (Data, Variable, Absolute)
+    0xc0,                          #   END_COLLECTION
+    0xc0                           # END_COLLECTION
+]
+_REPORT_MAP_GAMEPAD = b"\x05\x01\t\x04\xa1\x01\x85\x01\xa1\x00\t0\t1u\x08\x95\x02\x15\x81%\x7f\x81\x02\x05\tu\x01\x95\x08\x19\x01)\x08%\x01\x15\x00\x81\x02\xc0\xc0"
 
 def _ad_data(type, data):
     size = len(data) + 1
